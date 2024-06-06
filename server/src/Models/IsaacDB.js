@@ -7,21 +7,7 @@ const IsaacDBSchema = new mongoose.Schema({
   password: String
 });
 
-const IsaacDBModel = mongoose.model('isaacs', IsaacDBSchema);
-
-// Define the function to connect to MongoDB
-const connectDB = async () => {
-    try {
-      await mongoose.connect('mongodb://127.0.0.1:27017/isaacDB', {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
-      console.log('Connected to MongoDB');
-    } catch (err) {
-      console.error('Error connecting to MongoDB:', err.message);
-      process.exit(1);
-    }
-};
+const IsaacDBModel = mongoose.model('Isaac', IsaacDBSchema);
 
 // Define the Appointment schema and model
 const appointmentSchema = new mongoose.Schema({
@@ -44,5 +30,19 @@ const appointmentSchema = new mongoose.Schema({
 });
 
 const Appointment = mongoose.model('Appointment', appointmentSchema);
+
+// Define the function to connect to MongoDB
+const connectDB = async () => {
+  try {
+    await mongoose.connect('mongodb://127.0.0.1:27017/isaacDB', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('Connected to MongoDB');
+  } catch (err) {
+    console.error('Error connecting to MongoDB:', err.message);
+    process.exit(1);
+  }
+};
 
 module.exports = { connectDB, IsaacDBModel, Appointment };
