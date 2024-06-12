@@ -1,48 +1,41 @@
+// Models/IsaacDB.js
 const mongoose = require('mongoose');
 
-// Define IsaacDB schema and model for user signup
-const IsaacDBSchema = new mongoose.Schema({
+const IsaacSchema = new mongoose.Schema({
   name: String,
   email: String,
-  password: String
+  password: String,
+  role: String
 });
 
-const IsaacDBModel = mongoose.model('Isaac', IsaacDBSchema);
+const IsaacDBModel = mongoose.model('Isaac', IsaacSchema);
 
-// Define the Appointment schema and model
-const appointmentSchema = new mongoose.Schema({
-  customerName: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  date: {
-    type: String,
-    required: true,
-  },
-  time: {
-    type: String,
-    required: true,
-  },
-});
-
-const Appointment = mongoose.model('Appointment', appointmentSchema);
-
-// Define the function to connect to MongoDB
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/isaacDB', {
+    await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
-      useUnifiedTopology: true,
+      useUnifiedTopology: true
     });
-    console.log('Connected to MongoDB');
+
+    console.log('MongoDB connected...');
+
   } catch (err) {
-    console.error('Error connecting to MongoDB:', err.message);
+    console.error(err.message);
     process.exit(1);
   }
 };
 
-module.exports = { connectDB, IsaacDBModel, Appointment };
+module.exports = {
+  connectDB,
+  IsaacDBModel,
+  Appointment: mongoose.model('Appointment', new mongoose.Schema({
+    customerName: String,
+    email: String,
+    date: String,
+    time: String
+  })),
+  BookingDate: mongoose.model('BookingDate', new mongoose.Schema({
+    justDate: Date,
+    dateTime: Date
+  }))
+};

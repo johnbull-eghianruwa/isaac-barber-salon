@@ -1,12 +1,6 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.trpc = void 0;
-const client_1 = require("@trpc/client");
-const next_1 = require("@trpc/next");
-const superjson_1 = __importDefault(require("superjson"));
+import { httpBatchLink, loggerLink } from "@trpc/client";
+import { createTRPCNext } from "@trpc/next";
+import superjson from "superjson";
 const getBaseUrl = () => {
     if (typeof window !== "undefined")
         return ""; // browser should use relative url
@@ -14,16 +8,16 @@ const getBaseUrl = () => {
         return `https://${process.env.VERCEL_URL}`; // SSR should use vercel url
     return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
 };
-exports.trpc = (0, next_1.createTRPCNext)({
+export const trpc = createTRPCNext({
     config() {
         return {
-            transformer: superjson_1.default,
+            transformer: superjson,
             links: [
-                (0, client_1.loggerLink)({
+                loggerLink({
                     enabled: (opts) => process.env.NODE_ENV === "development" ||
                         (opts.direction === "down" && opts.result instanceof Error),
                 }),
-                (0, client_1.httpBatchLink)({
+                httpBatchLink({
                     url: `${getBaseUrl()}/api/trpc`,
                 }),
             ],
